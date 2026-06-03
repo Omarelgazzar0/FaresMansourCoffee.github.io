@@ -1,0 +1,1793 @@
+/* ═══════════════════════════════════════════════════════════════════════
+    FAROS COFFEE POS — style.css
+    
+    Design Direction:
+    ─────────────────
+    "Vibrant Souk" — Inspired by Cairo's Khan el-Khalili market.
+    Rich teal base with warm amber & coral accents. Deep emerald panels.
+    The palette is confident, warm, colorful — not dark-minimal coffee-shop
+    cliché, but energetic and alive like a busy Egyptian market morning.
+
+    Color Palette:
+    ──────────────
+    --ink       #0D1F1A  → near-black teal (main background)
+    --deep      #112820  → deep emerald (panels / cards)
+    --surface   #1A3D30  → surface cards
+    --border    #254D3E  → subtle borders
+    --amber     #E8A020  → warm amber (primary accent)
+    --amber-lt  #F5C842  → light amber (highlights)
+    --coral     #E84855  → coral red (delete / error)
+    --teal      #00C5A1  → bright teal (secondary accent / active)
+    --sky       #38B6D8  → sky blue (info badges)
+    --cream     #FAF0DC  → warm cream (main text)
+    --muted     #5A8070  → muted green-grey
+
+    Typography:
+    ───────────
+    Cormorant Garamond  → elegant display / brand titles
+    Syne                → bold UI labels, navigation
+    JetBrains Mono      → all numbers, codes, prices
+═══════════════════════════════════════════════════════════════════════ */
+
+/* ──────────────────────────────────────────
+    1. CSS CUSTOM PROPERTIES (design tokens)
+────────────────────────────────────────── */
+:root {
+    /* Colors */
+    --ink:       #0D1F1A;
+    --deep:      #112820;
+    --surface:   #1A3D30;
+    --border:    #254D3E;
+    --border-lt: #316655;
+
+    --amber:     #E8A020;
+    --amber-lt:  #F5C842;
+    --amber-dim: rgba(232, 160, 32, 0.12);
+    --amber-glow: rgba(232, 160, 32, 0.25);
+
+    --coral:     #E84855;
+    --coral-dim: rgba(232, 72, 85, 0.12);
+
+    --teal:      #00C5A1;
+    --teal-dim:  rgba(0, 197, 161, 0.12);
+    --teal-glow: rgba(0, 197, 161, 0.2);
+
+    --sky:       #38B6D8;
+    --sky-dim:   rgba(56, 182, 216, 0.12);
+
+    --violet:    #B06AE8;
+    --violet-dim: rgba(176, 106, 232, 0.12);
+
+    --cream:     #FAF0DC;
+    --cream-dim: rgba(250, 240, 220, 0.6);
+    --muted:     #5A8070;
+    --muted-lt:  #7AA090;
+
+    /* Typography */
+    --font-display: 'Cormorant Garamond', Georgia, serif;
+    --font-ui:      'Syne', sans-serif;
+    --font-mono:    'JetBrains Mono', 'Courier New', monospace;
+
+    /* Spacing */
+    --gap-sm:  0.5rem;
+    --gap-md:  1rem;
+    --gap-lg:  1.5rem;
+    --gap-xl:  2rem;
+
+    /* Radius */
+    --r-sm:  6px;
+    --r-md:  10px;
+    --r-lg:  16px;
+
+    /* Transitions */
+    --ease: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ──────────────────────────────────────────
+    2. RESET & BASE
+────────────────────────────────────────── */
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    font-size: 14px;
+    scroll-behavior: smooth;
+}
+
+body {
+    background: var(--ink);
+    color: var(--cream);
+    font-family: var(--font-ui);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+
+    /* Subtle noise texture overlay for depth */
+    background-image:
+        radial-gradient(ellipse 80% 60% at 20% 0%, rgba(0,197,161,0.07) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 40% at 80% 100%, rgba(232,160,32,0.06) 0%, transparent 60%);
+}
+
+/* ──────────────────────────────────────────
+    3. SCROLLBAR
+────────────────────────────────────────── */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border-lt); border-radius: 99px; }
+::-webkit-scrollbar-thumb:hover { background: var(--muted); }
+
+/* ──────────────────────────────────────────
+    4. HEADER
+────────────────────────────────────────── */
+#appHeader {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    height: 60px;
+    background: var(--deep);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 var(--gap-xl);
+    /* Top colored stripe */
+    box-shadow: 0 -3px 0 var(--amber) inset;
+}
+
+/* Logo */
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-sm);
+}
+
+.logo-mark {
+    width: 38px;
+    height: 38px;
+    background: linear-gradient(135deg, var(--amber), var(--amber-lt));
+    border-radius: var(--r-sm);
+    display: grid;
+    place-items: center;
+    font-size: 1.25rem;
+    box-shadow: 0 0 16px var(--amber-glow);
+}
+
+.logo-primary {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--cream);
+    letter-spacing: 0.03em;
+}
+
+.logo-secondary {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    font-weight: 400;
+    font-style: italic;
+    color: var(--amber);
+    margin-left: 0.35rem;
+}
+
+/* Navigation */
+#mainNav {
+    display: flex;
+    gap: 0.2rem;
+}
+
+.nav-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: var(--font-ui);
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--muted-lt);
+    padding: 0.45rem 1rem;
+    border-radius: var(--r-sm);
+    transition: all 0.2s var(--ease);
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+}
+
+.nav-btn .nav-icon { 
+  font-size: 0.9rem; 
+}
+
+.nav-btn:hover {
+    background: var(--surface);
+    color: var(--teal);
+}
+
+.nav-btn.active {
+    background: var(--teal-dim);
+    color: var(--teal);
+    box-shadow: 0 0 0 1px var(--teal-glow);
+}
+
+/* ──────────────────────────────────────────
+    5. PAGE ROUTING (show/hide)
+────────────────────────────────────────── */
+.page {
+    display: none; 
+}
+
+.page.active {
+    display: block; 
+}
+
+/* Inner page wrapper (Customers, Orders, Catalog) */
+.inner-page {
+    padding: var(--gap-lg);
+    overflow-y: auto;
+    max-height: calc(100vh - 60px);
+}
+
+/* ──────────────────────────────────────────
+    6. POS LAYOUT  (two-column split)
+────────────────────────────────────────── */
+.pos-layout {
+    display: grid;
+    grid-template-columns: 1fr 380px;
+    height: calc(100vh - 60px);
+    overflow: hidden;
+}
+
+/* Left scrollable column */
+.pos-left {
+    padding: var(--gap-lg);
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-md);
+}
+
+/* Right fixed cart column */
+.pos-right {
+    background: var(--deep);
+    border-left: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* ──────────────────────────────────────────
+    7. SECTION CARDS
+────────────────────────────────────────── */
+.card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-lg);
+    padding: var(--gap-lg);
+    position: relative;
+    /* Colored left accent bar */
+    border-left: 3px solid var(--teal);
+}
+
+/* Section label header */
+.card-label {
+    font-family: var(--font-ui);
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--teal);
+    margin-bottom: var(--gap-md);
+    display: flex;
+    align-items: center;
+    gap: var(--gap-sm);
+}
+
+.card-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(to right, var(--border-lt), transparent);
+}
+
+/* ──────────────────────────────────────────
+   8. FORM ELEMENTS
+────────────────────────────────────────── */
+.form-row {
+    display: grid; 
+    gap: var(--gap-sm); 
+    margin-bottom: var(--gap-sm);
+}
+
+.two-col { 
+    grid-template-columns: 1fr 1fr;
+}
+
+.one-col { 
+    grid-template-columns: 1fr;
+}
+
+.three-col { 
+    grid-template-columns: 1fr 1fr 1fr;
+}
+
+.field { 
+    display: flex;
+    flex-direction: column;
+}
+
+label {
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted-lt);
+    margin-bottom: 0.3rem;
+}
+
+input,
+select,
+textarea {
+    width: 100%;
+    background: var(--deep);
+    border: 1px solid var(--border);
+    border-radius: var(--r-sm);
+    color: var(--cream);
+    font-family: var(--font-ui);
+    font-size: 0.9rem;
+    padding: 0.55rem 0.8rem;
+    outline: none;
+    transition: border-color 0.2s var(--ease), box-shadow 0.2s var(--ease);
+    appearance: none;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+    border-color: var(--amber);
+    box-shadow: 0 0 0 3px var(--amber-dim);
+}
+
+textarea {
+    resize: vertical;
+    min-height: 62px;
+    font-family: var(--font-ui);
+}
+
+select option { 
+    background: var(--deep);
+}
+
+/* Number inputs — mono font for alignment */
+input[type="number"] {
+    font-family: var(--font-mono);
+}
+
+/* ──────────────────────────────────────────
+    9. PAYMENT PILL-BUTTONS
+────────────────────────────────────────── */
+.pill-group {
+    display: flex;
+    gap: 0.4rem;
+    flex-wrap: wrap;
+}
+
+.pill {
+    flex: 1;
+    padding: 0.45rem 0.6rem;
+    border-radius: var(--r-sm);
+    background: var(--deep);
+    border: 1px solid var(--border);
+    color: var(--muted-lt);
+    font-family: var(--font-ui);
+    font-size: 0.72rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s var(--ease);
+    text-align: center;
+    white-space: nowrap;
+}
+
+.pill:hover { 
+    border-color: var(--amber);
+    color: var(--amber);
+}
+
+.pill.active {
+    background: var(--amber-dim);
+    border-color: var(--amber);
+    color: var(--amber-lt);
+    box-shadow: 0 0 8px var(--amber-dim);
+}
+
+/* ──────────────────────────────────────────
+   10. CATALOG GRID  (coffee selection cards)
+────────────────────────────────────────── */
+.catalog-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: var(--gap-sm);
+}
+
+/* Individual product card */
+.catalog-card {
+    background: var(--deep);
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    padding: var(--gap-md);
+    cursor: default;
+    transition: all 0.2s var(--ease);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Colored top-bar by type */
+.catalog-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: var(--card-accent, var(--amber));
+    border-radius: var(--r-md) var(--r-md) 0 0;
+}
+
+/* Type-specific accent colors */
+.catalog-card[data-type="coffee"] { 
+    --card-accent: var(--amber); 
+}
+
+.catalog-card[data-type="package"] { 
+    --card-accent: var(--teal);
+}
+
+.catalog-card[data-type="ingredient"] { 
+    --card-accent: var(--violet);
+}
+
+.catalog-card:hover {
+    border-color: var(--card-accent, var(--amber));
+    transform: translateY(-1px);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+}
+
+.catalog-card.selected {
+    border-color: var(--card-accent, var(--amber));
+    background: rgba(232, 160, 32, 0.06);
+}
+
+/* Type badge chip */
+.card-type-badge {
+    display: inline-block;
+    font-family: var(--font-ui);
+    font-size: 0.6rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.15rem 0.5rem;
+    border-radius: 99px;
+    margin-bottom: 0.5rem;
+    background: var(--amber-dim);
+    color: var(--amber-lt);
+}
+
+.catalog-card[data-type="package"]    .card-type-badge { 
+  background: var(--teal-dim);
+  color: var(--teal); 
+}
+
+.catalog-card[data-type="ingredient"] .card-type-badge { 
+  background: var(--violet-dim);
+  color: var(--violet);
+}
+
+/* Product name (Arabic, RTL) */
+.card-name-ar {
+    font-family: var(--font-display);
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--cream);
+    direction: rtl;
+    text-align: right;
+    margin-bottom: 0.1rem;
+    line-height: 1.3;
+}
+
+/* Product name (English) */
+.card-name-en {
+    font-size: 0.7rem;
+    color: var(--muted-lt);
+    margin-bottom: 0.6rem;
+}
+
+/* Price display */
+.card-price {
+    font-family: var(--font-mono);
+    font-size: 1rem;
+    color: var(--amber-lt);
+    display: flex;
+    align-items: baseline;
+    gap: 0.3rem;
+}
+
+.card-price .price-unit {
+    font-size: 0.65rem;
+    color: var(--muted);
+}
+
+/* Quantity +/- control row */
+.qty-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 0.75rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--border);
+}
+
+.qty-label {
+    font-size: 0.68rem;
+    color: var(--muted-lt);
+}
+
+.qty-controls {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+.qty-btn {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: var(--border);
+    border: none;
+    cursor: pointer;
+    color: var(--cream);
+    font-size: 1rem;
+    line-height: 1;
+    display: grid;
+    place-items: center;
+    transition: background 0.15s var(--ease), transform 0.1s;
+}
+
+.qty-btn:hover { 
+    background: var(--amber);
+    color: var(--ink);
+}
+
+.qty-btn:active { 
+    transform: scale(0.9); 
+}
+
+.qty-display {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: var(--amber-lt);
+    min-width: 3.8rem;
+    text-align: center;
+}
+
+
+/* ──────────────────────────────────────────
+    11. CART / ORDER PANEL (right column)
+────────────────────────────────────────── */
+.cart-header {
+    padding: var(--gap-md) var(--gap-lg);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+}
+
+.cart-title {
+    font-family: var(--font-display);
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--cream);
+    letter-spacing: 0.02em;
+}
+
+.cart-date {
+    font-size: 0.72rem;
+    color: var(--muted-lt);
+    margin-top: 0.2rem;
+}
+
+/* Invoice number badge */
+.invoice-badge {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    background: var(--teal-dim);
+    color: var(--teal);
+    border: 1px solid var(--teal-glow);
+    border-radius: var(--r-sm);
+    padding: 0.2rem 0.6rem;
+    letter-spacing: 0.05em;
+}
+
+/* Scrollable item list */
+.cart-items {
+    flex: 1;
+    overflow-y: auto;
+    padding: var(--gap-md);
+}
+
+/* Empty state */
+.cart-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    text-align: center;
+    color: var(--muted);
+    gap: 0.4rem;
+}
+
+.empty-icon {
+    font-size: 2.5rem;
+    opacity: 0.25;
+    filter: grayscale(1);
+}
+
+.cart-empty p { 
+    font-size: 0.9rem; 
+}
+
+.cart-empty small { 
+    font-size: 0.72rem; 
+}
+
+/* Cart line item */
+.cart-line {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+    padding: 0.6rem 0;
+    border-bottom: 1px solid var(--border);
+    animation: slideIn 0.2s var(--ease);
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0; 
+        transform: translateX(8px); 
+    }
+
+    to {
+        opacity: 1; 
+        transform: translateX(0); 
+    }
+}
+
+.cart-line:last-child { 
+    border-bottom: none; 
+}
+
+.cl-info { 
+    flex: 1; 
+    min-width: 0; 
+}
+
+.cl-name {
+    font-family: var(--font-display);
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--cream);
+    direction: rtl;
+    text-align: right;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.cl-detail {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    color: var(--muted-lt);
+    margin-top: 0.15rem;
+}
+
+.cl-price {
+    font-family: var(--font-mono);
+    font-size: 0.88rem;
+    color: var(--amber-lt);
+    white-space: nowrap;
+    padding-top: 0.1rem;
+}
+
+.cl-remove {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--muted);
+    font-size: 0.85rem;
+    padding: 0 0.2rem;
+    line-height: 1;
+    transition: color 0.15s;
+}
+
+.cl-remove:hover { 
+    color: var(--coral); 
+}
+
+/* ──────────────────────────────────────────
+    12. CART TOTALS
+────────────────────────────────────────── */
+.cart-totals {
+    padding: var(--gap-md) var(--gap-lg);
+    border-top: 1px solid var(--border);
+    background: var(--ink);
+}
+
+.total-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 0.4rem;
+}
+
+.tl {
+    font-size: 0.78rem;
+    color: var(--muted-lt);
+}
+
+.tv {
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    color: var(--cream-dim);
+}
+
+/* Grand total row — stands out */
+.total-row.grand {
+    margin-top: 0.6rem;
+    padding-top: 0.6rem;
+    border-top: 1px solid var(--border-lt);
+}
+
+.total-row.grand .tl {
+    font-family: var(--font-ui);
+    font-weight: 700;
+    font-size: 0.85rem;
+    letter-spacing: 0.1em;
+    color: var(--cream);
+}
+
+.total-row.grand .tv {
+    font-size: 1.15rem;
+    color: var(--amber-lt);
+    text-shadow: 0 0 12px var(--amber-glow);
+}
+
+/* ──────────────────────────────────────────
+    13. CART ACTION BUTTONS
+────────────────────────────────────────── */
+.cart-actions {
+    padding: var(--gap-md);
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+/* ──────────────────────────────────────────
+    14. BUTTONS  (shared)
+────────────────────────────────────────── */
+.btn {
+    width: 100%;
+    padding: 0.72rem 1rem;
+    border-radius: var(--r-sm);
+    border: none;
+    cursor: pointer;
+    font-family: var(--font-ui);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    transition: all 0.2s var(--ease);
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, var(--amber), var(--amber-lt));
+    color: var(--ink);
+    box-shadow: 0 2px 12px var(--amber-dim);
+}
+
+.btn-primary:hover {
+    filter: brightness(1.1);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 20px var(--amber-glow);
+}
+
+.btn-ghost {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--cream-dim);
+}
+
+.btn-ghost:hover {
+    border-color: var(--coral);
+    color: var(--coral);
+    background: var(--coral-dim);
+}
+
+.btn-teal {
+    background: var(--teal-dim);
+    border: 1px solid var(--teal-glow);
+    color: var(--teal);
+}
+
+.btn-teal:hover { 
+    background: var(--teal); 
+    color: var(--ink);
+}
+
+.btn-sm {
+    width: auto;
+    padding: 0.3rem 0.7rem;
+    font-size: 0.65rem;
+}
+
+.btn-danger {
+    background: var(--coral-dim);
+    border: 1px solid var(--coral);
+    color: var(--coral);
+    width: auto;
+    padding: 0.3rem 0.7rem;
+    font-size: 0.65rem;
+}
+
+.btn-danger:hover { 
+  background: var(--coral); 
+  color: white;
+}
+
+/* ──────────────────────────────────────────
+    15. STATS ROW  (summary cards)
+────────────────────────────────────────── */
+.stats-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: var(--gap-md);
+    margin-bottom: var(--gap-lg);
+}
+
+.stat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    padding: var(--gap-md) var(--gap-lg);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Colorful accent corner */
+.stat-card::after {
+    content: '';
+    position: absolute;
+    top: -20px; right: -20px;
+    width: 60px; height: 60px;
+    border-radius: 50%;
+    background: var(--stat-color, var(--amber));
+    opacity: 0.08;
+}
+
+.stat-card:nth-child(1) { --stat-color: var(--amber); }
+.stat-card:nth-child(2) { --stat-color: var(--teal);  }
+.stat-card:nth-child(3) { --stat-color: var(--sky);   }
+.stat-card:nth-child(4) { --stat-color: var(--violet); }
+
+.stat-value {
+    font-family: var(--font-display);
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--amber-lt);
+    line-height: 1;
+    margin-bottom: 0.3rem;
+}
+
+.stat-card:nth-child(2) .stat-value { color: var(--teal); }
+.stat-card:nth-child(3) .stat-value { color: var(--sky);  }
+.stat-card:nth-child(4) .stat-value { color: var(--violet); }
+
+.stat-label {
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted-lt);
+}
+
+/* ──────────────────────────────────────────
+    16. DATA TABLES
+────────────────────────────────────────── */
+.table-wrap { 
+    overflow-x: auto; 
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.83rem;
+}
+
+thead th {
+    background: var(--deep);
+    color: var(--muted-lt);
+    font-family: var(--font-ui);
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 0.75rem 1rem;
+    text-align: left;
+    border-bottom: 2px solid var(--border);
+    white-space: nowrap;
+}
+
+tbody td {
+    padding: 0.65rem 1rem;
+    border-bottom: 1px solid var(--border);
+    color: var(--cream);
+    vertical-align: middle;
+}
+
+tbody tr:hover td { background: rgba(0, 197, 161, 0.03); }
+tbody tr:last-child td { border-bottom: none; }
+
+/* Empty state in tables */
+.table-empty {
+    text-align: center;
+    color: var(--muted);
+    padding: 2.5rem !important;
+    font-size: 0.85rem;
+}
+
+/* ──────────────────────────────────────────
+    17. BADGES & CHIPS
+────────────────────────────────────────── */
+.badge {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    padding: 0.18rem 0.55rem;
+    border-radius: 99px;
+    white-space: nowrap;
+}
+
+.badge-amber  { background: var(--amber-dim);  color: var(--amber-lt); }
+.badge-teal   { background: var(--teal-dim);   color: var(--teal);     }
+.badge-sky    { background: var(--sky-dim);    color: var(--sky);      }
+.badge-violet { background: var(--violet-dim); color: var(--violet);   }
+.badge-coral  { background: var(--coral-dim);  color: var(--coral);    }
+
+/* ──────────────────────────────────────────
+    18. MODAL
+────────────────────────────────────────── */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.75);
+    display: none;
+    place-items: center;
+    z-index: 999;
+    backdrop-filter: blur(5px);
+}
+
+.modal-overlay.open { 
+  display: grid;
+}
+
+.modal {
+    background: var(--surface);
+    border: 1px solid var(--border-lt);
+    border-radius: var(--r-lg);
+    width: 420px;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+    box-shadow: 0 24px 64px rgba(0,0,0,0.5);
+
+    /* Amber glow at the top */
+    box-shadow:
+      0 0 0 1px var(--border-lt),
+      0 -3px 0 var(--amber) inset,
+      0 24px 64px rgba(0,0,0,0.5);
+    animation: modalIn 0.25s var(--ease);
+}
+
+@keyframes modalIn {
+    from { 
+        opacity: 0; 
+        transform: scale(0.95) translateY(-10px); 
+    }
+    to { 
+        opacity: 1; 
+        transform: scale(1) translateY(0); 
+    }
+}
+
+.modal-close {
+    position: absolute;
+    top: 0.9rem;
+    right: 0.9rem;
+    background: var(--border);
+    border: none;
+    cursor: pointer;
+    color: var(--cream);
+    border-radius: 50%;
+    width: 28px;
+    height: 28px;
+    font-size: 0.9rem;
+    display: grid;
+    place-items: center;
+    transition: background 0.15s;
+    z-index: 1;
+}
+
+.modal-close:hover { 
+    background: var(--coral); 
+}
+
+.modal-actions {
+    padding: var(--gap-md) var(--gap-xl) var(--gap-lg);
+    display: flex;
+    gap: 0.5rem;
+}
+
+.modal-actions .btn { 
+    flex: 1; 
+}
+
+/* ──────────────────────────────────────────
+    19. PRINTABLE CUSTOMER RECEIPT
+    Only shows: Name, Address, Mobile, Weight, Total
+    NO item/price breakdown per spec
+────────────────────────────────────────── */
+.receipt-paper {
+    padding: var(--gap-xl) var(--gap-xl) var(--gap-md);
+    font-family: var(--font-mono);
+}
+
+/* Brand header */
+.rp-brand {
+    text-align: center;
+    margin-bottom: var(--gap-lg);
+}
+
+.rp-brand h2 {
+    font-family: var(--font-display);
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--amber-lt);
+    letter-spacing: 0.04em;
+}
+
+.rp-brand .tagline {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 0.85rem;
+    color: var(--muted-lt);
+    letter-spacing: 0.2em;
+}
+
+/* Dashed divider */
+.rp-divider {
+    border: none;
+    border-top: 1px dashed var(--border-lt);
+    margin: var(--gap-md) 0;
+}
+
+/* Receipt info grid */
+.rp-info {
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    gap: 0.3rem 0.8rem;
+    margin-bottom: var(--gap-md);
+}
+
+.rp-info .rk {
+    font-size: 0.65rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted-lt);
+}
+
+.rp-info .rv {
+    font-size: 0.8rem;
+    color: var(--cream);
+}
+
+/* Summary totals block */
+.rp-summary {
+    background: var(--deep);
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    padding: var(--gap-md);
+    margin-top: var(--gap-md);
+}
+
+.rp-summary-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 0.3rem 0;
+}
+
+.rp-summary-row.final {
+    border-top: 1px solid var(--border-lt);
+    margin-top: 0.4rem;
+    padding-top: 0.6rem;
+}
+
+.rp-summary-row .sk { font-size: 0.72rem; color: var(--muted-lt); }
+.rp-summary-row .sv { font-size: 0.85rem; color: var(--cream); }
+.rp-summary-row.final .sk { font-weight: 700; font-size: 0.8rem; color: var(--cream); }
+.rp-summary-row.final .sv { font-size: 1.1rem; color: var(--amber-lt); }
+
+/* Footer note */
+.rp-footer {
+    text-align: center;
+    margin-top: var(--gap-lg);
+    font-size: 0.7rem;
+    color: var(--muted);
+    line-height: 1.7;
+}
+
+/* ──────────────────────────────────────────
+    20. TOAST NOTIFICATION
+────────────────────────────────────────── */
+#toastEl {
+    position: fixed;
+    bottom: 1.5rem;
+    right: 1.5rem;
+    background: var(--surface);
+    border: 1px solid var(--border-lt);
+    border-left: 3px solid var(--teal);
+    color: var(--cream);
+    padding: 0.75rem 1.25rem;
+    border-radius: var(--r-sm);
+    font-size: 0.82rem;
+    font-family: var(--font-ui);
+    transform: translateX(130%);
+    transition: transform 0.3s var(--ease);
+    z-index: 9999;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    max-width: 280px;
+}
+
+#toastEl.visible { transform: translateX(0); }
+#toastEl.toast-error { border-left-color: var(--coral); }
+#toastEl.toast-success { border-left-color: var(--teal); }
+
+/* ──────────────────────────────────────────
+    21. PRINT STYLES
+    Only printArea is shown — hides all UI chrome
+────────────────────────────────────────── */
+@media print {
+    body * { visibility: hidden !important; }
+
+    #printArea,
+    #printArea * {
+        visibility: visible !important;
+    }
+
+    #printArea {
+        position: fixed;
+        inset: 0;
+        background: white;
+        color: black;
+        padding: 2rem;
+    }
+
+    /* Force light colors for print */
+    .receipt-paper { color: #111; }
+    .rp-brand h2  { color: #333; }
+    .rp-info .rv  { color: #111; }
+    .rp-summary   { background: #f5f5f5; border-color: #ccc; }
+    .rp-summary-row .sv { color: #111; }
+    .rp-summary-row.final .sv { color: #000; font-weight: bold; }
+}
+
+
+/* ──────────────────────────────────────────
+   22. UTILITY HELPERS
+────────────────────────────────────────── */
+.mono { font-family: var(--font-mono); }
+.rtl  { direction: rtl; text-align: right; }
+.muted { color: var(--muted-lt); }
+.hidden { display: none !important; }
+
+/* ═══════════════════════════════════════════════════════════════════════
+    23. RESPONSIVE DESIGN
+    ────────────────────────────────────────────────────────────────────
+    Breakpoints:
+        < 480px   → xs   (small phones — iPhone SE, Galaxy A series)
+        < 640px   → sm   (phones in portrait)
+        < 900px   → md   (large phones landscape, small tablets)
+        < 1100px  → lg   (tablets, small laptops)
+        ≥ 1100px  → xl   (desktop — base styles above)
+
+    Strategy on POS page:
+        Desktop  → two-column side-by-side (products left / cart right)
+        Tablet   → two-column, narrower cart (320px)
+        Mobile   → single column, cart becomes a slide-up drawer
+                    toggled by a floating action button (FAB)
+═══════════════════════════════════════════════════════════════════════ */
+
+
+/* ──────────────────────────────────────────────────────────────────────
+   MOBILE CART FAB  (floating action button — hidden on desktop)
+────────────────────────────────────────────────────────────────────── */
+.cart-fab {
+    display: none; /* hidden on desktop; shown via media query below */
+    position: fixed;
+    bottom: 5rem;   /* sits above the bottom nav bar */
+    right: 1.25rem;
+    z-index: 300;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--amber), var(--amber-lt));
+    border: none;
+    cursor: pointer;
+    font-size: 1.4rem;
+    box-shadow: 0 4px 20px var(--amber-glow), 0 2px 8px rgba(0,0,0,0.4);
+    transition: transform 0.2s var(--ease), box-shadow 0.2s var(--ease);
+    align-items: center;
+    justify-content: center;
+}
+
+.cart-fab:active { transform: scale(0.92); }
+
+/* Item count badge on the FAB */
+.cart-fab-badge {
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    background: var(--coral);
+    color: white;
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    font-weight: 700;
+    min-width: 20px;
+    height: 20px;
+    border-radius: 99px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 0.3rem;
+    border: 2px solid var(--ink);
+}
+
+/* Hide badge when count is 0 */
+.cart-fab-badge[data-count="0"],
+.cart-fab-badge:empty {
+    display: none;
+}
+
+
+/* ──────────────────────────────────────────────────────────────────────
+    BOTTOM NAVIGATION BAR  (mobile only — hidden on desktop)
+────────────────────────────────────────────────────────────────────── */
+.bottom-nav {
+    display: none; /* shown via media query */
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 200;
+    background: var(--deep);
+    border-top: 1px solid var(--border);
+    height: 60px;
+    padding: 0 0.5rem;
+    grid-template-columns: repeat(4, 1fr);
+    align-items: stretch;
+    box-shadow: 0 -4px 24px rgba(0,0,0,0.35);
+}
+
+.bottom-nav-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.15rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--muted-lt);
+    font-family: var(--font-ui);
+    font-size: 0.58rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    padding: 0.5rem 0.25rem;
+    border-radius: var(--r-sm);
+    transition: color 0.15s var(--ease), background 0.15s;
+}
+
+.bottom-nav-btn span:first-child { font-size: 1.1rem; }
+
+.bottom-nav-btn.active {
+    color: var(--amber-lt);
+    background: var(--amber-dim);
+}
+
+.bottom-nav-btn:active {
+    background: var(--surface);
+}
+
+/* ──────────────────────────────────────────────────────────────────────
+    MOBILE CART DRAWER
+    On mobile the .pos-right slides up from the bottom as a drawer.
+    Controlled by the .cart-open class added to #page-pos by JS.
+────────────────────────────────────────────────────────────────────── */
+
+/* Drawer overlay — darkens the content behind it */
+.cart-drawer-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.55);
+    z-index: 149;
+    backdrop-filter: blur(2px);
+}
+
+/* Shown when cart is open on mobile */
+#page-pos.cart-open .cart-drawer-overlay {
+    display: block;
+    animation: fadeIn 0.2s var(--ease);
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+/* ──────────────────────────────────────────────────────────────────────
+    LG — TABLETS / SMALL LAPTOPS  (< 1100px)
+────────────────────────────────────────────────────────────────────── */
+@media (max-width: 1100px) {
+
+    /* Shrink the cart panel slightly */
+    .pos-layout {
+        grid-template-columns: 1fr 320px;
+    }
+
+    /* Tighter header padding */
+    #appHeader {
+        padding: 0 var(--gap-lg);
+    }
+
+    /* Hide text labels on nav, keep icons */
+    .nav-btn {
+        padding: 0.45rem 0.7rem;
+        font-size: 0.7rem;
+        letter-spacing: 0.04em;
+    }
+
+    /* Catalog grid: smaller min card width */
+    .catalog-grid {
+        grid-template-columns: repeat(auto-fill, minmax(175px, 1fr));
+    }
+
+    /* Stats can wrap to 2 columns */
+    .stats-row {
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    }
+}
+
+/* ──────────────────────────────────────────────────────────────────────
+    MD — LARGE PHONES LANDSCAPE / SMALL TABLETS  (< 900px)
+────────────────────────────────────────────────────────────────────── */
+@media (max-width: 900px) {
+
+    html { font-size: 13px; }
+
+    /* Header: tighter, hide logo text on very small */
+    #appHeader {
+        padding: 0 var(--gap-md);
+        height: 54px;
+    }
+
+    /* Collapse header nav — use bottom nav instead */
+    #mainNav {
+        display: none;
+    }
+
+    /* Show bottom navigation */
+    .bottom-nav {
+        display: grid;
+    }
+
+    /* Show the cart FAB */
+    .cart-fab {
+        display: flex;
+    }
+
+    /* ── POS layout becomes a single column ── */
+    .pos-layout {
+        grid-template-columns: 1fr;
+        grid-template-rows: 1fr;
+        height: calc(100vh - 54px);
+        overflow: hidden;
+        position: relative;
+    }
+
+    /* Left column fills full width, scrolls naturally */
+    .pos-left {
+        padding: var(--gap-md);
+        /* Add bottom padding for bottom nav + FAB */
+        padding-bottom: 8rem;
+        height: calc(100vh - 54px);
+        overflow-y: auto;
+    }
+
+    /* ── Cart panel becomes a slide-up drawer ── */
+    .pos-right {
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 150;
+        border-left: none;
+        border-top: 1px solid var(--border-lt);
+        border-radius: var(--r-lg) var(--r-lg) 0 0;
+
+        /* Hidden below viewport */
+        transform: translateY(100%);
+        transition: transform 0.35s cubic-bezier(0.32, 0.72, 0, 1);
+
+        /* Limit height to 85% of screen */
+        max-height: 85vh;
+        box-shadow: 0 -8px 40px rgba(0, 0, 0, 0.5);
+    }
+
+    /* Drawer open state — triggered by JS adding .cart-open to #page-pos */
+    #page-pos.cart-open .pos-right {
+        transform: translateY(0);
+    }
+
+    /* Drag handle indicator at top of drawer */
+    .pos-right::before {
+        content: '';
+        display: block;
+        width: 40px;
+        height: 4px;
+        background: var(--border-lt);
+        border-radius: 99px;
+        margin: 0.6rem auto 0;
+    }
+
+    /* Inner page padding accounts for bottom nav */
+    .inner-page {
+        padding: var(--gap-md);
+        padding-bottom: 5rem; /* room for bottom nav */
+        max-height: calc(100vh - 54px);
+    }
+
+    /* Form grids collapse to single column */
+    .two-col,
+    .three-col {
+        grid-template-columns: 1fr;
+    }
+
+    /* Stats compact on mobile */
+    .stats-row {
+        grid-template-columns: 1fr 1fr;
+        gap: var(--gap-sm);
+    }
+
+    .stat-value { font-size: 1.5rem; }
+
+    /* Card padding tighter */
+    .card {
+        padding: var(--gap-md);
+    }
+
+    /* Catalog grid: 2 equal columns on mid-size screens */
+    .catalog-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    /* Qty buttons: slightly larger tap targets on touch screens */
+    .qty-btn {
+        width: 30px;
+        height: 30px;
+        font-size: 1.1rem;
+    }
+
+    /* Modal: full width on tablet */
+    .modal {
+        width: calc(100vw - 2rem);
+        max-width: 480px;
+        margin: var(--gap-md);
+        max-height: 88vh;
+    }
+
+    /* Toast: bottom-center on mobile instead of bottom-right */
+    #toastEl {
+        left: 1rem;
+        right: 1rem;
+        bottom: 5rem; /* above bottom nav */
+        max-width: none;
+        text-align: center;
+        transform: translateY(150%);
+    }
+
+    #toastEl.visible {
+        transform: translateY(0);
+    }
+}
+
+/* ──────────────────────────────────────────────────────────────────────
+    SM — PHONES IN PORTRAIT  (< 640px)
+────────────────────────────────────────────────────────────────────── */
+@media (max-width: 640px) {
+
+    html { font-size: 13px; }
+
+    /* Logo: hide the text "Coffee" subtitle to save space */
+    .logo-secondary {
+        display: none;
+    }
+
+    /* Header height reduction */
+    #appHeader {
+        height: 50px;
+    }
+
+    /* Inner pages scroll correction */
+    .inner-page {
+        max-height: calc(100vh - 50px);
+    }
+
+    .pos-left {
+        height: calc(100vh - 50px);
+        padding: 0.75rem;
+        padding-bottom: 8rem;
+    }
+
+    /* Catalog cards: single column on small phones */
+    .catalog-grid {
+        grid-template-columns: 1fr;
+    }
+
+    /* Cart drawer: full screen on small phone */
+    .pos-right {
+        max-height: 90vh;
+    }
+
+    /* Stats: single column on phones */
+    .stats-row {
+        grid-template-columns: 1fr;
+    }
+
+    /* Card: minimal padding */
+    .card {
+        padding: 0.875rem;
+        border-radius: var(--r-md);
+    }
+
+    /* Cart header wraps vertically */
+    .cart-header {
+        flex-direction: column;
+        gap: 0.4rem;
+        padding: 0.75rem var(--gap-md);
+    }
+
+    /* Receipt modal: full-screen sheet on small phones */
+    .modal {
+        width: 100vw;
+        max-width: 100vw;
+        margin: 0;
+        border-radius: var(--r-lg) var(--r-lg) 0 0;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        max-height: 92vh;
+    }
+
+    .modal-overlay {
+        align-items: flex-end;
+    }
+
+    /* Catalog form: stack all 3 columns */
+    .three-col {
+        grid-template-columns: 1fr;
+    }
+
+    /* Payment pills: wrap gracefully */
+    .pill-group {
+        gap: 0.3rem;
+    }
+
+    .pill {
+        min-width: 80px;
+        font-size: 0.68rem;
+    }
+
+    /* Table cells: hide less important columns via priority classes */
+    .col-hide-sm {
+        display: none;
+    }
+
+    /* Smaller receipt font */
+    .receipt-paper {
+        padding: var(--gap-lg) var(--gap-md) var(--gap-md);
+        font-size: 0.75rem;
+    }
+
+    .rp-brand h2 {
+        font-size: 1.5rem;
+    }
+
+    /* Cart totals: compact */
+    .cart-totals {
+        padding: 0.75rem var(--gap-md);
+    }
+
+    /* Cart actions: more breathing room on touch */
+    .cart-actions {
+        padding: 0.75rem;
+    }
+
+    .btn {
+        padding: 0.85rem 1rem; /* bigger tap target */
+        font-size: 0.78rem;
+    }
+}
+
+/* ──────────────────────────────────────────────────────────────────────
+    XS — VERY SMALL PHONES  (< 380px)
+    e.g. iPhone SE (1st gen), older Android devices
+────────────────────────────────────────────────────────────────────── */
+@media (max-width: 380px) {
+
+    html { font-size: 12px; }
+
+    /* Logo: show only the icon mark */
+    .logo-text {
+        display: none;
+    }
+
+    /* Tighter global padding */
+    .pos-left,
+    .inner-page {
+        padding: 0.6rem;
+        padding-bottom: 8rem;
+    }
+
+    /* Card quantity controls: full-width row */
+    .qty-row {
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 0.4rem;
+    }
+
+    /* Bottom nav: icon only — hide text labels */
+    .bottom-nav-btn span:last-child {
+        display: none;
+    }
+
+    .bottom-nav {
+        padding: 0;
+    }
+
+    .bottom-nav-btn span:first-child {
+        font-size: 1.4rem;
+    }
+}
+
+/* ──────────────────────────────────────────────────────────────────────
+    LANDSCAPE PHONE  (short viewport, wide)
+    e.g. iPhone rotated, Galaxy in landscape
+────────────────────────────────────────────────────────────────────── */
+@media (max-height: 500px) and (max-width: 900px) {
+
+    /* Use two-column POS layout but more compact */
+    .pos-layout {
+        grid-template-columns: 1fr 280px;
+        height: calc(100vh - 50px);
+        overflow: hidden;
+    }
+
+    /* Left col scrolls */
+    .pos-left {
+        height: auto;
+        overflow-y: auto;
+        padding-bottom: var(--gap-md);
+    }
+
+    /* Cart panel: not a drawer, stays side-by-side */
+    .pos-right {
+        position: static;
+        transform: none !important;
+        max-height: none;
+        border-radius: 0;
+        border-left: 1px solid var(--border);
+        border-top: none;
+        box-shadow: none;
+    }
+
+    /* Disable FAB in landscape (cart is always visible) */
+    .cart-fab {
+        display: none !important;
+    }
+
+    /* Remove drawer handle in landscape */
+    .pos-right::before {
+        display: none;
+    }
+
+    /* Compact header */
+    #appHeader {
+        height: 44px;
+    }
+
+    /* Restore top nav, hide bottom nav */
+    #mainNav {
+        display: flex;
+    }
+
+    .bottom-nav {
+        display: none !important;
+    }
+
+    /* Catalog grid: 3 columns in landscape */
+    .catalog-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .inner-page {
+        max-height: calc(100vh - 44px);
+        padding-bottom: var(--gap-md);
+    }
+}
+
+/* ──────────────────────────────────────────────────────────────────────
+    TOUCH DEVICE REFINEMENTS
+    Applies to any touch-primary device regardless of screen size
+────────────────────────────────────────────────────────────────────── */
+@media (hover: none) and (pointer: coarse) {
+
+    /* Larger tap targets for interactive elements */
+    .qty-btn {
+        width: 32px;
+        height: 32px;
+    }
+
+    .nav-btn {
+        min-height: 40px;
+    }
+
+    .pill {
+        min-height: 36px;
+        padding: 0.5rem 0.75rem;
+    }
+
+    .btn {
+        min-height: 44px;
+    }
+
+    /* Remove hover effects that feel sticky on touch */
+    .catalog-card:hover {
+        transform: none;
+        box-shadow: none;
+    }
+
+    .btn-primary:hover {
+        transform: none;
+        filter: none;
+    }
+
+    /* Faster transitions feel more responsive on touch */
+    .catalog-card,
+    .btn,
+    .pill,
+    .qty-btn {
+        transition-duration: 0.1s;
+    }
+}

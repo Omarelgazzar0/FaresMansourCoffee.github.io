@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+    <head>
+        <meta charset="UTF-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <title>Fares Mansour Coffee — POS System</title>
+
+        <!-- ════════════════════════════════════════
+            FONTS
+            Cormorant Garamond  → editorial display headlines
+            Syne                → bold UI labels & nav
+            JetBrains Mono      → numbers, prices, codes
+        ════════════════════════════════════════ -->
+        <link rel="preconnect" href="https://fonts.googleapis.com"/>
+        <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,700&family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
+
+        <!-- sql.js — pure-JS SQLite that runs in the browser -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.10.2/sql-wasm.js"></script>
+
+        <!-- Project stylesheets -->
+        <link rel="stylesheet" href="CSS/Index Style.css"/>
+    </head>
+    <body>
+        <!-- ══════════════════════════════════════════════════════════
+            HEADER  —  Logo + Navigation tabs
+        ══════════════════════════════════════════════════════════ -->
+        <header id="appHeader">
+            <div class="header-left">
+                <div class="logo-mark">☕</div>
+                <div class="logo-text">
+                    <span class="logo-primary">Fares Mansour</span>
+                    <span class="logo-secondary">Coffee</span>
+                </div>
+            </div>
+
+            <nav id="mainNav">
+                <!-- Each button carries a data-page attribute used by JS routing -->
+                <button class="nav-btn active" data-page="pos">
+                    <span class="nav-icon">🧾</span> POS
+                </button>
+
+                <button class="nav-btn" data-page="catalog">
+                    <span class="nav-icon">📦</span> Catalog
+                </button>
+
+                <button class="nav-btn" data-page="customers">
+                    <span class="nav-icon">👥</span> Customers
+                </button>
+
+                <button class="nav-btn" data-page="orders">
+                    <span class="nav-icon">📋</span> Orders
+                </button>
+            </nav>
+        </header>
+
+        <!-- ══════════════════════════════════════════════════════════
+            PAGE: POS  —  main point-of-sale screen
+        ══════════════════════════════════════════════════════════ -->
+        <div id="page-pos" class="page active">
+            <div class="pos-layout">
+
+                <!-- ── LEFT COLUMN: Customer info + product selection ── -->
+                <div class="pos-left">
+
+                    <!-- Customer information form -->
+                    <section class="card" id="customerSection">
+                        <div class="card-label">Customer Info</div>
+                        <div class="form-row two-col">
+                            <div class="field">
+                                <label for="custName">Full Name *</label>
+                                <input id="custName" type="text" placeholder="e.g. Ahmed Hassan"/>
+                            </div>
+
+                            <div class="field">
+                                <label for="custMobile">Mobile Number</label>
+                                <input id="custMobile" type="tel" placeholder="+20 1XX XXX XXXX"/>
+                            </div>
+                        </div>
+
+                        <div class="form-row one-col">
+                            <div class="field">
+                                <label for="custAddr">Address</label>
+                                <textarea id="custAddr" placeholder="Street, Area, City…"></textarea>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Coffee catalog selection grid -->
+                    <section class="card" id="coffeeSection">
+                        <div class="card-label">Coffee Selection</div>
+                        <!-- Populated dynamically by catalog.js -->
+                        <div class="catalog-grid" id="catalogGrid"></div>
+                    </section>
+
+                    <!-- Order settings: payment method, tax, notes -->
+                    <section class="card" id="orderSection">
+                        <div class="card-label">Order Settings</div>
+                        <div class="form-row two-col">
+
+                            <!-- Payment method pill-buttons -->
+                            <div class="field">
+                                <label>Payment Method</label>
+                                <div class="pill-group" id="paymentPills">
+                                    <button class="pill active" data-val="Cash">💵 Cash</button>
+                                    <button class="pill" data-val="Credit">💳 Credit</button>
+                                    <button class="pill" data-val="Instapay">📱 Instapay</button>
+                                </div>
+                            </div>
+
+                            <!-- Tax rate input -->
+                            <div class="field">
+                              <label for="taxRate">Tax Rate (%)</label>
+                              <input id="taxRate" type="number" value="14" min="0" max="100" step="0.5"/>
+                            </div>
+                        </div>
+
+                        <div class="form-row one-col">
+                            <div class="field">
+                                <label for="orderNotes">Notes</label>
+                                <input id="orderNotes" type="text" placeholder="Any special instructions…"/>
+                            </div>
+                        </div>
+                    </section>
+
+                </div><!-- /pos-left -->
+
+                <!-- ── RIGHT COLUMN: Live receipt cart ── -->
+                <aside class="pos-right">
+                    <div class="cart-header">
+                        <div>
+                            <h2 class="cart-title">Current Order</h2>
+                            <p class="cart-date" id="cartDate"></p>
+                        </div>
+                        <!-- Invoice number preview -->
+                        <span class="invoice-badge" id="invoiceBadge">—</span>
+                    </div>
+
+                    <!-- List of items in cart -->
+                    <div class="cart-items" id="cartItems">
+                        <div class="cart-empty" id="cartEmpty">
+                            <div class="empty-icon">☕</div>
+                            <p>No items selected</p>
+                            <small>Choose coffee from the grid</small>
+                        </div>
+                    </div>
+
+                    <!-- Running totals (hidden when cart is empty) -->
+                    <div class="cart-totals" id="cartTotals">
+                        <div class="total-row">
+                            <span class="tl">Total Weight</span>
+                            <span class="tv" id="totalWeight">0.000 kg</span>
+                        </div>
+
+                        <div class="total-row">
+                            <span class="tl">Subtotal</span>
+                            <span class="tv" id="subtotalVal">EGP 0.00</span>
+                        </div>
+
+                        <div class="total-row">
+                            <span class="tl">Tax (<span id="taxPctDisplay">14</span>%)</span>
+                            <span class="tv" id="taxVal">EGP 0.00</span>
+                        </div>
+
+                        <div class="total-row grand">
+                            <span class="tl">TOTAL</span>
+                            <span class="tv" id="grandVal">EGP 0.00</span>
+                        </div>
+                    </div>
+
+                    <!-- Action buttons -->
+                    <div class="cart-actions">
+                        <button class="btn btn-primary" id="btnSaveOrder">💾 Save & Generate Receipt</button>
+                        <button class="btn btn-ghost" id="btnClearOrder">🗑 Clear Order</button>
+                    </div>
+                </aside>
+
+            </div><!-- /pos-layout -->
+        </div><!-- /page-pos -->
+
+        <!-- ══════════════════════════════════════════════════════════
+            PAGE: CATALOG  —  manage coffee items, packages, ingredients
+        ══════════════════════════════════════════════════════════ -->
+        <div id="page-catalog" class="page">
+            <div class="inner-page">
+
+                <!-- Add new catalog item form -->
+                <section class="card">
+                    <div class="card-label">Add New Item to Catalog</div>
+                    <div class="form-row three-col">
+                        <div class="field">
+                            <label for="newItemNameAr">Name (Arabic)</label>
+                            <input id="newItemNameAr" type="text" placeholder="حبشي هرهري" dir="rtl"/>
+                        </div>
+
+                        <div class="field">
+                            <label for="newItemNameEn">Name (English)</label>
+                            <input id="newItemNameEn" type="text" placeholder="Ethiopian Harari"/>
+                        </div>
+
+                        <div class="field">
+                            <label for="newItemType">Type</label>
+                            <select id="newItemType">
+                                <option value="coffee">☕ Coffee Bean</option>
+                                <option value="package">📦 Package</option>
+                                <option value="ingredient">🧂 Ingredient</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row three-col">
+                        <div class="field">
+                            <label for="newItemPrice">Price (EGP per kg)</label>
+                            <input id="newItemPrice" type="number" min="0" step="1" placeholder="440"/>
+                        </div>
+
+                        <div class="field">
+                            <label for="newItemUnit">Unit</label>
+                            <select id="newItemUnit">
+                                <option value="kg">kg</option>
+                                <option value="g">g</option>
+                                <option value="piece">piece</option>
+                                <option value="pack">pack</option>
+                            </select>
+                        </div>
+
+                        <div class="field" style="display:flex;align-items:flex-end">
+                            <button class="btn btn-primary" id="btnAddItem" style="width:100%">＋ Add Item</button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Existing catalog items table -->
+                <section class="card">
+                    <div class="card-label">Current Catalog</div>
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Arabic Name</th>
+                                    <th>English Name</th>
+                                    <th>Type</th>
+                                    <th>Price</th>
+                                    <th>Unit</th>
+                                    <th>Active</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="catalogTableBody"></tbody>
+                        </table>
+                    </div>
+                </section>
+            </div>
+        </div><!-- /page-catalog -->
+
+        <!-- ══════════════════════════════════════════════════════════
+            PAGE: CUSTOMERS  —  saved customer database
+        ══════════════════════════════════════════════════════════ -->
+        <div id="page-customers" class="page">
+            <div class="inner-page">
+                <div class="stats-row" id="customerStats"></div>
+                <section class="card">
+                    <div class="card-label">Customer Database</div>
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Name</th>
+                                    <th>Mobile</th>
+                                    <th>Address</th>
+                                    <th>Orders</th>
+                                    <th>Total Spent</th>
+                                    <th>Since</th>
+                                </tr>
+                            </thead>
+                            <tbody id="customerTableBody"></tbody>
+                        </table>
+                    </div>
+                </section>
+            </div>
+        </div><!-- /page-customers -->
+
+        <!-- ══════════════════════════════════════════════════════════
+            PAGE: ORDERS  —  order history
+        ══════════════════════════════════════════════════════════ -->
+        <div id="page-orders" class="page">
+            <div class="inner-page">
+                <div class="stats-row" id="orderStats"></div>
+                <section class="card">
+                    <div class="card-label">Order History</div>
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Invoice</th>
+                                    <th>Date</th>
+                                    <th>Customer</th>
+                                    <th>Weight</th>
+                                    <th>Total</th>
+                                    <th>Payment</th>
+                                    <th>Receipt</th>
+                                </tr>
+                            </thead>
+                            <tbody id="orderTableBody"></tbody>
+                        </table>
+                    </div>
+                </section>
+            </div>
+        </div><!-- /page-orders -->
+
+        <!-- ══════════════════════════════════════════════════════════
+            MODAL: Customer Receipt  (printed view)
+            Shows only: Name, Address, Mobile, Weight, Total
+            — no item/pricing breakdown per product specification
+        ══════════════════════════════════════════════════════════ -->
+        <div class="modal-overlay" id="receiptOverlay">
+            <div class="modal" id="receiptModal">
+                <button class="modal-close" id="btnCloseModal">✕</button>
+                <!-- Printable area — only this section is shown during window.print() -->
+                <div id="printArea">
+                    <div class="receipt-paper" id="receiptContent">
+                      <!-- Populated by app.js → renderReceipt() -->
+                    </div>
+                </div>
+
+                <div class="modal-actions">
+                    <button class="btn btn-primary" onclick="window.print()">🖨 Print Receipt</button>
+                    <button class="btn btn-ghost" id="btnCloseModal2">Close</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ══════════════════════════════════════════════════════════
+            MOBILE: Floating cart button (visible only on small screens)
+            Shows item count badge. Toggles the cart drawer open/closed.
+        ══════════════════════════════════════════════════════════ -->
+        <button id="cartFab" class="cart-fab" aria-label="Open cart">
+            🛒
+            <span class="cart-fab-badge" id="cartFabBadge">0</span>
+        </button>
+
+        <!-- ══════════════════════════════════════════════════════════
+            MOBILE: Bottom navigation bar (replaces top nav on phones)
+        ══════════════════════════════════════════════════════════ -->
+        <nav id="bottomNav" class="bottom-nav">
+            <button class="bottom-nav-btn active" data-page="pos">
+                <span>🧾</span><span>POS</span>
+            </button>
+
+            <button class="bottom-nav-btn" data-page="catalog">
+                <span>📦</span><span>Catalog</span>
+            </button>
+
+            <button class="bottom-nav-btn" data-page="customers">
+                <span>👥</span><span>Customers</span>
+            </button>
+
+            <button class="bottom-nav-btn" data-page="orders">
+                <span>📋</span><span>Orders</span>
+            </button>
+        </nav>
+
+        <!-- ══════════════════════════════════════════════════════════
+            TOAST notification  (bottom-right feedback)
+        ══════════════════════════════════════════════════════════ -->
+        <div id="toastEl"></div>
+
+        <!-- ══════════════════════════════════════════════════════════
+            SCRIPTS  —  load order matters:
+            1. db.js      → database layer (must load first)
+            2. catalog.js → product catalog data + grid builder
+            3. app.js     → UI logic, events, routing
+        ══════════════════════════════════════════════════════════ -->
+        <script src="JavaScript/db.js"></script>
+        <script src="JavaScript/catalog.js"></script>
+        <script src="JavaScript/app.js"></script>
+    </body>
+</html>
